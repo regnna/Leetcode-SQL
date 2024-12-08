@@ -1,3 +1,5 @@
+# Row_Number() over()
+
 import pandas as pd
 import duckdb
 
@@ -7,7 +9,7 @@ Stadium = pd.DataFrame(data, columns=['id', 'visit_date', 'people']).astype({'id
 
 print(duckdb.query("""
 with cte as(
-    select *, id-row_number() over(order by id) as diff
+    select *, id - row_number() over(order by id) as diff
     from Stadium
     where people>=100
 )

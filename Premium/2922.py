@@ -2,13 +2,14 @@ import pandas as pd
 from datetime import datetime
 import duckdb
 
+
 users_data = {
     "seller_id": [1, 2, 3],
     "join_date": [datetime(2019, 1, 1), datetime(2019, 2, 9), datetime(2019, 1, 19)],
     "favorite_brand": ["Lenovo", "Samsung", "LG"]
 }
-users_df = pd.DataFrame(users_data)
 
+users_df = pd.DataFrame(users_data)
 
 orders_data = {
     "order_id": [1, 2, 3, 4, 5],
