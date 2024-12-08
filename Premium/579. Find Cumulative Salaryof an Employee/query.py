@@ -1,4 +1,6 @@
 """
+1. used ranking over row_number
+2. over(partition by id order by month range between 2 preceding and current row)
 Range between and as order by month it will check preceding months such as if the current month is 7 it will check 6 and 5 
 row between check preceding rows even if the preceding row having month 4 and 3 
 """
