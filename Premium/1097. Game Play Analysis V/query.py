@@ -1,3 +1,13 @@
+"""
+1. using Dense ranking with partition over player_id and order_by event_date
+2. using lead window funciton 
+        The LEAD(event_date,1,NaT) window function takes a column 
+        and an integer offset as arguments 
+        and returns the value of the cell in that column that is the specified number of rows after the current row. 
+        A third argument can be added to fill cells that do not have a corresponding row.
+3. ROUND(SUM(CASE WHEN DATEDIFF('day', event_date, nxt_login) = 1 THEN 1 ELSE 0 END) / COUNT(*), 2)
+"""
+
 import pandas as pd
 import duckdb
 
@@ -11,6 +21,7 @@ with cte as
     from activity
 )
 
+--select * from cte;--
 select event_date as install_dt,
 count(*) as installs,
 ROUND(SUM(CASE WHEN DATEDIFF('day', event_date, nxt_login) = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS Day1_retention
