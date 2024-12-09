@@ -1,3 +1,9 @@
+"""
+1. used case when
+2. if the column name of both the table is same then we can join those tables via `using (column_name)` 
+3. Used danse ranking via score in desecending, candidate_id ascending ordr
+4. and choosing the rnk rows
+"""
 import pandas as pd
 import duckdb 
 
@@ -79,7 +85,10 @@ cte2 AS (
 Select project_id, candidate_id,score
 from cte2
 Where rnk =1
-Order by project_id;
+Order by project_id
+
+
+--select * from cte2--
 ;
 
 """).to_df())
