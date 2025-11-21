@@ -7,7 +7,8 @@
 import pandas as pd
 import duckdb 
 
-# data = [[101, 'Python', 5], [101, 'Tableau', 3], [101, 'PostgreSQL', 4], [101, 'TensorFlow', 2], [102, 'Python', 4], [102, 'Tableau', 5], [102, 'PostgreSQL', 4], [102, 'R', 4], [103, 'Python', 3], [103, 'Tableau', 5], [103, 'PostgreSQL', 5], [103, 'Spark', 4]]
+# data = [[101, 'Python', 5], [101, '
+# Tableau', 3], [101, 'PostgreSQL', 4], [101, 'TensorFlow', 2], [102, 'Python', 4], [102, 'Tableau', 5], [102, 'PostgreSQL', 4], [102, 'R', 4], [103, 'Python', 3], [103, 'Tableau', 5], [103, 'PostgreSQL', 5], [103, 'Spark', 4]]
 # candidates = pd.DataFrame({
 #     'candidate_id': pd.Series(dtype='int'),
 #     'skill': pd.Series(dtype='str'),

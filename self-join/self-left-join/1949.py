@@ -1,3 +1,8 @@
+"""
+union
+
+"""
+
 import pandas as pd
 import duckdb
 
@@ -9,7 +14,7 @@ print(duckdb.query("""
 with cte as
 (select * from friendship
 union select user2_id, user1_id from friendship 
-),
+)
 
 cte2 as(
 select c1.user1_id,c2.user1_id as user2_id,count(c2.user2_id) as common_friend
