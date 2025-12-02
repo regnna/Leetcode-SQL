@@ -7,6 +7,19 @@ apply single quotes(') to represent the string expression in duchdb query as dou
 
 pd.set_option("display.max_columns",200)
 
+# Error
+
+<details>
+<summary>while selecting columns facing group by error</summary>
+When you use GROUP BY, every selected column must be:
+
+- in the GROUP BY, or
+- an aggregate (MAX(), MIN(), STRING_AGG(), COUNT…)
+  - 
+- or an engine-specific exception like ANY_VALUE()
+
+</details>
+
 
 # Same,same but different
 current_plan is not NULL and\
@@ -42,4 +55,31 @@ week(date(meeting_date),1) as weks_num/
 #### colesce
   COALESCE(c.chargeback_count, 0) AS chargeback_count,
   if chargeback_count is null it will show 0 value
+#### Round
+  ROUND(
+      1.0 * (SUM(CASE WHEN r.session_rating >= 4 THEN 1 ELSE 0 END)
+           + SUM(CASE WHEN r.session_rating <= 2 THEN 1 ELSE 0 END))
+      / NULLIF(COUNT(r.session_rating), 0), 3
+    ) AS polarization
+#### Prtition
 
+Rather than doing a group by what can we do is
+
+MAX(price) OVER (PARTITION BY store_id) AS store_max_price,
+    MIN(price) OVER (PARTITION BY store_id) AS store_min_price
+
+#### Case
+we often use null and a category value in case when statememnt 
+we can use any aggregation function on top of that to get only the conditioned value
+exp:- MAX(case when chp_rnk=1 then product_name else Null end) MOST_CHP_Product,
+
+and for numerical value we can so a sum where else is 0
+exp:- sum(case when chp_rnk=1 then quantity else 0 end) as chp_Qty,
+
+#### STRING_AGG(i.product_name,',')
+```sql
+SELECT i.store_id, STRING_AGG(i.product_name, ', ') AS max_product_names
+  FROM inventory i
+  JOIN extremes e ON i.store_id = e.store_id AND i.price = e.store_max_price
+  GROUP BY i.store_id
+```
