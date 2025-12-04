@@ -7,5 +7,11 @@ user_activity = pd.DataFrame(data,columns=['user_id','activity_date','activity_t
 
 
 print(duckdb.query("""
-select * from user_activity
+
+select user_id, round(avg(case when activity_type='free_trial' then activity_duration else null end),2) as trial_avg_duration,
+round(avg(case when activity_type='paid' then activity_duration else null end),2) as paid_avg_duration
+ from user_activity
+ group by user_id
+ having avg(case when activity_type='paid' then activity_duration else null end) is not null
+ order by user_id;
 """).to_df())
