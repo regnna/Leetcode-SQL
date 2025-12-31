@@ -83,3 +83,8 @@ SELECT i.store_id, STRING_AGG(i.product_name, ', ') AS max_product_names
   JOIN extremes e ON i.store_id = e.store_id AND i.price = e.store_max_price
   GROUP BY i.store_id
 ```
+#### Complex condition
+not for both condition together 
+```sql
+select order_id,customer_id,order_type from cte where not (order_type=1 and minimum=0)
+```
