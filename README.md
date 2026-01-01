@@ -21,6 +21,7 @@ When you use GROUP BY, every selected column must be:
 </details>
 
 
+
 # Same,same but different
 current_plan is not NULL and\
 current_plan<>'Null' and
@@ -28,6 +29,13 @@ current_plan<>'Null' and
 dateformat(trans_date,'%Y-%m') as month,\
     strftime(trans_date, '%Y-%m') AS month,
 
+## Join with same column name
+```sql
+select ................
+from cte c left join 
+players p 
+using (player_id) / ON p.player_id = c.player_id;
+```
 ### dayofweek()
 * friday=5
 * saturday=6
