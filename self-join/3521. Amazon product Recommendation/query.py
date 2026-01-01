@@ -20,3 +20,7 @@ product_info = pd.DataFrame(
     "category": "string",
     "price": "float64"
 })
+
+print(duckdb.query("""
+
+""").to_df())
