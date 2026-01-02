@@ -96,3 +96,16 @@ not for both condition together
 ```sql
 select order_id,customer_id,order_type from cte where not (order_type=1 and minimum=0)
 ```
+
+## Group by and over(partition) does the same job
+```sql 
+select from_id,to_id, sum(duration) from cte group by from_id,to_id
+
+select distinct from_id,to_id, sum(duration) over(partition by from_id,to_id) from cte
+```
+We need that distinct keyword in over() window function
+  * GROUP BY = collapse
+  * OVER(PARTITION BY) = decorate
+  * Window functions repeat results per row
+    * DISTINCT is only there to hide repetition
+  * Prefer GROUP BY for final aggregates
