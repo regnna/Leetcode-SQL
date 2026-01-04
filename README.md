@@ -109,3 +109,25 @@ We need that distinct keyword in over() window function
   * Window functions repeat results per row
     * DISTINCT is only there to hide repetition
   * Prefer GROUP BY for final aggregates
+
+## Running total/balance
+
+```sql
+select gender, day, 
+sum(score_points) over(partition by gender order by gender,day) as total
+ from scores
+
+
+select account_id,day,
+SUM(
+    CASE 
+        WHEN type = 'Deposit' THEN amount 
+        ELSE -amount 
+    END
+) OVER (
+    PARTITION BY account_id
+    ORDER BY day
+) AS balance
+
+ from transactions
+```
