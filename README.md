@@ -140,3 +140,8 @@ WINDOW FUNCTIONS[ over(partition by ......)]
 └── Navigation → LAG, LEAD, FIRST_VALUE, LAST_VALUE, NTH_VALUE
 ```
 
+### Type Casting
+```sql
+select company_id,cast(.74* salary as int) as salaryAfterTax
+```
+for this scenario we can also used Round()
