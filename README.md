@@ -130,4 +130,13 @@ SUM(
 ) AS balance
 
  from transactions
+
 ```
+### 
+```
+WINDOW FUNCTIONS[ over(partition by ......)]
+├── Aggregate → SUM, AVG, COUNT, MIN, MAX
+├── Ranking → ROW_NUMBER, RANK, DENSE_RANK, NTILE,PERCENT_RANK, CUME_DIST
+└── Navigation → LAG, LEAD, FIRST_VALUE, LAST_VALUE, NTH_VALUE
+```
+
