@@ -60,16 +60,26 @@ week(date(meeting_date),1) as weks_num/
 #### if 
   sum(If(state='approved',1,0)) as approved_count,
   sum(If(state='approved',amount,0)) as approved_amount
-#### colesce
+#### colesce >> IFNULL()
   COALESCE(c.chargeback_count, 0) AS chargeback_count,
   if chargeback_count is null it will show 0 value
 #### Round
+```sql
+    SELECT ROUND(123.4567, 2);		123.46
+    SELECT ROUND(123.4, 0);		123
+    SELECT ROUND(99.9);	100
+    SELECT ROUND(123.45, -2);		100
+    SELECT ROUND(150.75, 0);		151.00
   ROUND(
       1.0 * (SUM(CASE WHEN r.session_rating >= 4 THEN 1 ELSE 0 END)
            + SUM(CASE WHEN r.session_rating <= 2 THEN 1 ELSE 0 END))
       / NULLIF(COUNT(r.session_rating), 0), 3
     ) AS polarization
+```
+
+    
 #### Prtition
+
 
 Rather than doing a group by what can we do is
 
@@ -145,3 +155,23 @@ WINDOW FUNCTIONS[ over(partition by ......)]
 select company_id,cast(.74* salary as int) as salaryAfterTax
 ```
 for this scenario we can also used Round()
+
+
+### concatination with a window function
+```sql 
+select **string_agg(product_name,'' ) within group ( order by product_name)** over(partition by customer_id) as purchased_products
+from orders
+```
+
+
+column_name=one_column_value  gives us the boolean value if thats true or false
+we can use this logic in multiple ways
+```sql
+select customer_id
+from orders 
+group by customer_id
+having sum(product_name='A')>0 and sum(product_name='B')>0 and sum(product_name='C')=0;
+```
+
+
+'chest_id': 'Int64',   # ✅ nullable integer
