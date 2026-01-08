@@ -113,6 +113,18 @@ select from_id,to_id, sum(duration) from cte group by from_id,to_id
 
 select distinct from_id,to_id, sum(duration) over(partition by from_id,to_id) from cte
 ```
+
+WINDOW FUNCTIONS:
+- Do NOT reduce rows
+- Add calculated columns
+- Same aggregate repeated per row
+
+GROUP BY:
+- Reduces rows
+- One row per group
+- Aggregation replaces rows
+
+
 We need that distinct keyword in over() window function
   * GROUP BY = collapse
   * OVER(PARTITION BY) = decorate
@@ -173,5 +185,10 @@ group by customer_id
 having sum(product_name='A')>0 and sum(product_name='B')>0 and sum(product_name='C')=0;
 ```
 
-
+### Python>Pandas
 'chest_id': 'Int64',   # ✅ nullable integer
+
+Every column in SELECT must be either
+
+- aggregated (MAX, SUM, etc.)
+- or listed in GROUP BY
