@@ -39,8 +39,17 @@ chests = pd.DataFrame(
 
 print(duckdb.query("""
 
+select cast(sum(case when b.chest_id is NULL then b.apple_count
+    else c.apple_count+b.apple_count end) as int) as apple_count,
+cast(sum(case when b.chest_id is NULL then b.orange_count
+    else c.orange_count+b.orange_count end) as int) as orange_count
+FROM boxes b
+LEFT JOIN chests c
+  ON b.chest_id = c.chest_id;
+
+
 /*select * from boxes  b left join chests c on b.chest_id=c.chest_id*/
-/*select sum(b.apple_count+c.apple_count),sum(b.orange_count+c.orange_count) from boxes b left join chests c on b.chest_id=c.chest_id*/
+/*select sum(b.apple_count+c.apple_count),sum(b.orange_count+c.orange_count) from boxes b left join chests c on b.chest_id=c.chest_id
 SELECT
   cast(sum(b.apple_count
     + COALESCE(c.apple_count, 0))as int) AS apple_count,
@@ -49,5 +58,5 @@ SELECT
 FROM boxes b
 LEFT JOIN chests c
   ON b.chest_id = c.chest_id;
-
+*/
 """).to_df())
