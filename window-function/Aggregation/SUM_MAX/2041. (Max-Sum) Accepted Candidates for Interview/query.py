@@ -46,10 +46,20 @@ rounds = pd.DataFrame(
 
 print(duckdb.query("""
 
+
+select c.candidate_id
+from candidates c 
+left join rounds r on c.interview_id=r.interview_id
+where c.years_of_exp>=2
+group by candidate_id
+having sum(score)>15
+
+/*
+
 with cte as(
 
 select distinct interview_id, max(round_id) over(partition by interview_id) as mx, sum(score) over(partition by interview_id) as sm from rounds )
 
 select can.candidate_id from cte c left join candidates can using(interview_id) where can.years_of_exp>=2 and c.sm >15
-
+*/
 """).to_df())
