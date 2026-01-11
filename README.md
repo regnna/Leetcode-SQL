@@ -192,3 +192,33 @@ Every column in SELECT must be either
 
 - aggregated (MAX, SUM, etc.)
 - or listed in GROUP BY
+
+
+### Just use avg() and group by
+rather than using sum()/sum(count(*)) the complex window fun
+
+```sql
+select project_id,
+/*round(sum(experience_years)/sum(count(*)) over(partition by project_id),2) as Average_years*/
+round(avg(experience_years),2) as Average_years
+from project p inner join employee e using(employee_id) group by project_id
+```
+
+
+```sql
+
+WITH ActivityCounts AS (
+    -- We JOIN with Activities to ensure we catch activities with 0 participants
+    SELECT a.name AS activity, COUNT(f.id) AS num
+    FROM Activities a
+    LEFT JOIN Friends f ON a.name = f.activity
+    GROUP BY a.name
+),
+MinMaxCalculations AS (
+    SELECT activity, num,
+           MAX(num) OVER() AS max_val,
+           MIN(num) OVER() AS min_val
+    FROM ActivityCounts
+)
+
+```
