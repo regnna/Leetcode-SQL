@@ -222,3 +222,8 @@ MinMaxCalculations AS (
 )
 
 ```
+
+
+When the task is to pick a row, use ROW_NUMBER / RANK
+
+When the task is to copy a value, use FIRST_VALUE
