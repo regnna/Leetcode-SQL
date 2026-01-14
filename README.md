@@ -171,7 +171,7 @@ for this scenario we can also used Round()
 
 ### concatination with a window function
 ```sql 
-select **string_agg(product_name,'' ) within group ( order by product_name)** over(partition by customer_id) as purchased_products
+select string_agg(product_name,'' ) within group ( order by product_name) over(partition by customer_id) as purchased_products
 from orders
 ```
 
@@ -227,3 +227,14 @@ MinMaxCalculations AS (
 When the task is to pick a row, use ROW_NUMBER / RANK
 
 When the task is to copy a value, use FIRST_VALUE
+
+
+### over(order by column_name rows between 6 Preceding and current row)
+aggregation(column_name)  over(order by column_name rows between 6 Preceding and current row)
+
+count(*) over (
+            order by visited_on
+            rows between 6 preceding and current row
+        ) as window_size
+
+its count row number (1-7)[give 7even if the row is more than 7]
