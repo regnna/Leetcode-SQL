@@ -29,6 +29,16 @@ current_plan<>'Null' and
 dateformat(trans_date,'%Y-%m') as month,\
     strftime(trans_date, '%Y-%m') AS month,
 
+COUNT(*) OVER() ~ select max(id) from seat
+
+case when mod(id,2)=0 then id-1 
+      /*when id=(select max(id) from seat)*/
+    when COUNT(*) OVER()  and mod(id,2)<>0 then id
+          else id+1 end as idd from seat
+~~
+CASE   WHEN mod(id, 2) <> 0 THEN COALESCE(LEAD(student) OVER(ORDER BY id), student)
+        ELSE LAG(student) OVER(ORDER BY id)
+
 ## Join with same column name
 ```sql
 select ................
@@ -60,7 +70,7 @@ week(date(meeting_date),1) as weks_num/
 #### if 
   sum(If(state='approved',1,0)) as approved_count,
   sum(If(state='approved',amount,0)) as approved_amount
-#### colesce >> IFNULL()
+#### coalesce >> IFNULL()
   COALESCE(c.chargeback_count, 0) AS chargeback_count,
   if chargeback_count is null it will show 0 value
 #### Round
@@ -238,3 +248,10 @@ count(*) over (
         ) as window_size
 
 its count row number (1-7)[give 7even if the row is more than 7]
+
+### complex Rank()
+  rank() over( order by 
+        case when c1.port is null then c2.flys2
+            when c2.port is null then c1.flys
+            else (c1.flys+c2.flys2) end desc) as total_fly_rnk
+
