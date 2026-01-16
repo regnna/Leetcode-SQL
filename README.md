@@ -29,7 +29,8 @@ current_plan<>'Null' and
 dateformat(trans_date,'%Y-%m') as month,\
     strftime(trans_date, '%Y-%m') AS month,
 
-COUNT(*) OVER() ~ select max(id) from seat
+`COUNT(*) OVER()` is not the same as `select max(id) from seat`
+rather `COUNT(*) OVER()` gives number of rows that very table has like `select count(*) from seat`
 
 case when mod(id,2)=0 then id-1 
       /*when id=(select max(id) from seat)*/
@@ -255,3 +256,59 @@ its count row number (1-7)[give 7even if the row is more than 7]
             when c2.port is null then c1.flys
             else (c1.flys+c2.flys2) end desc) as total_fly_rnk
 
+### I dont use having clause often 
+
+should have a proper overview where I can use the Having clause
+  basically when we want a group by value rather than a window group by and a filter condition on the top of that 
+
+    When to use HAVING
+          1. Filtering on Aggregates
+                SELECT customer_id, SUM(price)
+                FROM Sales
+                GROUP BY customer_id
+                HAVING SUM(price) > 1000;
+          2. Relational Divivsion (need to find an entity that matches all records in another table)
+              Find students who attended all required classes 
+                SELECT student_id
+                FROM Attendance
+                GROUP BY student_id
+                HAVING COUNT(DISTINCT class_id) = 5; 
+          3. Finding Duplicates
+              find email addresses that appear more than once in the users table
+                Select email FROM Users 
+                GROUP BY email
+                HAVING COUNT(*) >1;
+          4. Condition-based Group Filtering(Filtering a group based on a logic  check)
+              Find Projects that have at least one senior employee of experience>10
+                  SELECT project_id
+                  FROM Project p
+                  JOIN Employee e USING(employee_id)
+                  GROUP BY project_id
+                  HAVING MAX(experience_years) > 10;
+the 'Order of Excecution in SQL'
+
+  * From/Join
+  * Where(filter the raw rows)
+  * Group by(Bundle the rows into groups)
+  * HAving(Filter the groups)
+  * SELECT(Pick columns)
+  * Window Functions(Apply over())
+  * Order by (Sort the results)
+  
+
+Can't use Over() with Having clause()
+
+We use qualify() in those scenarios(qualify works like having()+ windows over())
+```sql
+-- Only works in specific DBs like DuckDB or Snowflake or BigQuery
+SELECT student
+FROM Seat
+QUALIFY COUNT(*) OVER() > 1;
+```
+
+| Clause      | Works On         | When it executes       | Can use Window Functions? |   |
+|-------------|------------------|------------------------|---------------------------|---|
+| WHERE       | Individual Rows  | Before Grouping        | No                        |   |
+| HAVING      | Group Aggregates | After Grouping         | No                        |   |
+| QUALIFY     | Window Results   | After Window Functions | Yes                       |   |
+| CTE + WHERE | Anything         | At the end             | Yes                       |   |
