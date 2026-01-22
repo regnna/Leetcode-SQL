@@ -312,3 +312,18 @@ QUALIFY COUNT(*) OVER() > 1;
 | HAVING      | Group Aggregates | After Grouping         | No                        |   |
 | QUALIFY     | Window Results   | After Window Functions | Yes                       |   |
 | CTE + WHERE | Anything         | At the end             | Yes                       |   |
+
+
+
+The easiest way to force a null is to wrap your query in MAX(). When MAX() is applied to an empty set, it returns NULL.
+
+```sql
+SELECT (
+    SELECT DISTINCT salary 
+    FROM Employee 
+    ORDER BY salary DESC 
+    LIMIT 1 OFFSET 1
+) AS SecondHighestSalary;
+```
+
+OFFSET 1: Skips the first (highest) and takes the next one.
