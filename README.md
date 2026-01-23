@@ -324,6 +324,8 @@ SELECT (
     ORDER BY salary DESC 
     LIMIT 1 OFFSET 1
 ) AS SecondHighestSalary;
+
 ```
+here offset 1 happens then after limit 1
 
 OFFSET 1: Skips the first (highest) and takes the next one.
