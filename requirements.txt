@@ -1,2 +1,2 @@
-pandas
-duckdb
+pandas>=2.3.3
+duckdb>=1.4.2
