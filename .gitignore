@@ -125,6 +125,7 @@ celerybeat.pid
 # Environments
 .sql
 .sql/
+sqldb/
 .venv
 env/
 venv/
