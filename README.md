@@ -329,3 +329,5 @@ SELECT (
 here offset 1 happens then after limit 1
 
 OFFSET 1: Skips the first (highest) and takes the next one.
+
+we can make the "order by" clause with the alias of the  alias of the column name 
