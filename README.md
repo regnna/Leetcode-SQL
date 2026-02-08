@@ -331,3 +331,28 @@ here offset 1 happens then after limit 1
 OFFSET 1: Skips the first (highest) and takes the next one.
 
 we can make the "order by" clause with the alias of the  alias of the column name 
+
+MySQL has very relaxed rules:
+```sql
+SELECT
+    user_id,
+    gender
+FROM genders
+ORDER BY
+    (
+        RANK() OVER (
+            PARTITION BY gender
+            ORDER BY user_id
+        )
+    ),
+    2;
+```
+
+&emsp;✅ Allows window functions inside ORDER BY
+
+&emsp; ✅ Allows ordinal references (ORDER BY 2)
+
+&emsp; ✅ Sorts gender lexicographically:
+
+PostGres: 
+&ensp; ERROR: window functions are not allowed in ORDER BY
