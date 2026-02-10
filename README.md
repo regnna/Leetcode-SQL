@@ -356,3 +356,49 @@ ORDER BY
 
 PostGres: 
 &ensp; ERROR: window functions are not allowed in ORDER BY
+
+when you need a aggregational under condition 
+<br/>
+Constrains
+ * you cant use aggreegation in where
+ * neither can you use having without explicitly using the group by clause
+<br/>
+
+Solution
+* you may use a window function and cte it and put the condition afterwords
+  * ```sql
+    WITH salary_counts AS (
+    SELECT 
+        employee_id,
+        name,
+        salary,
+        COUNT(*) OVER (PARTITION BY salary) as cnt
+    FROM Employees
+      ),
+      valid_teams AS (
+          SELECT 
+              employee_id,
+              name,
+              salary,
+              DENSE_RANK() OVER (ORDER BY salary) as team_id
+          FROM salary_counts
+          WHERE cnt >= 2
+      )
+      SELECT employee_id, name, salary, team_id
+      FROM valid_teams
+      ORDER BY team_id, employee_id;
+      ```
+* or put that agrregated table in insted clause
+  * ```sql
+    SELECT 
+    employee_id,
+    name,
+    salary,
+    DENSE_RANK() OVER (ORDER BY salary) as team_id
+    FROM (
+        SELECT *, COUNT(*) OVER (PARTITION BY salary) as cnt
+        FROM Employees
+    ) t
+    WHERE cnt >= 2
+    ORDER BY team_id, employee_id;
+    ```
