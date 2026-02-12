@@ -402,3 +402,85 @@ Solution
     WHERE cnt >= 2
     ORDER BY team_id, employee_id;
     ```
+if you want to limit the numbers of rows depending upon the value partitionning a certainning column 
+we can use 
+  * RANK() Over(partition by school_id order by score) as rnk
+    * where rnk=1
+  * Row_Number() OVer(partition by school_id order by score) as rn
+    * where rn=1
+
+## PIVOT turns rows into columns
+
+It rotates data from a vertical format into a horizontal format.
+
+| month | product | sales |
+|-------|---------|-------|
+| Jan   | A       | 100   |
+| Jan   | B       | 150   |
+| Feb   | A       | 200   |
+| Feb   | B       | 250   |
+This is row-based product data.
+
+
+```sql
+SELECT
+    month,
+    SUM(sales) FILTER (WHERE product = 'A') AS A,
+    SUM(sales) FILTER (WHERE product = 'B') AS B
+FROM sales
+GROUP BY month
+ORDER BY month;
+```
+
+### Pivot using tablefunc(Extension)
+```sql  CREATE EXTENSION IF NOT EXISTS tablefunc;```
+```sql SELECT *
+FROM crosstab(
+    'SELECT month, product, sales
+     FROM sales
+     ORDER BY month, product'
+) AS ct (
+    month TEXT,
+    A INT,
+    B INT
+);
+```
+
+
+We want products as columns:
+
+| month | A   | B   |
+|-------|-----|-----|
+| Jan   | 100 | 150 |
+| Feb   | 200 | 250 |
+
+Now products became columns.
+## unpivot does the vice-versa
+
+### unpivote using Union ALL
+```sql
+SELECT month, 'A' AS product, A AS sales
+FROM sales_pivoted
+UNION ALL
+SELECT month, 'B', B
+FROM sales_pivoted
+ORDER BY month;
+```
+
+### unipivot using cross join lateral
+  Lateral join is a additional keyword upon traditional join
+&emsp; To while putting thw abriviation of super query into the sub query we have to use this lateral, it makes all column from the super query available in the sub query
+
+```sql
+SELECT
+    sp.month,
+    x.product,
+    x.sales
+FROM sales_pivoted sp
+CROSS JOIN LATERAL (
+    VALUES
+        ('A', sp.A),
+        ('B', sp.B)
+) AS x(product, sales)
+ORDER BY sp.month;
+```
