@@ -484,3 +484,8 @@ CROSS JOIN LATERAL (
 ) AS x(product, sales)
 ORDER BY sp.month;
 ```
+'Union vs Union All'
+if you want all columns from both of the table use 'union all'
+"union" often merge the same rows
+
+if you join witout condition use "on true" caluse 
