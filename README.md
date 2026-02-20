@@ -489,3 +489,33 @@ if you want all columns from both of the table use 'union all'
 "union" often merge the same rows
 
 if you join witout condition use "on true" caluse 
+
+### use cases of cross join
+
+suppose we need to convert   
++----------+-----------------+
+platform | experiment_name   |
+| IOS      | Programming     |
+| IOS      | Sports          |
+| Android  | Reading         |
+| Web      | Reading         |
+| Web      | Reading         |
+| Web      | Programming     |
+
+to 
+
+----------+-----------------+
+| platform | experiment_name |
++----------+-----------------
+| Android  | Reading         |
+| Android  | Sports          |
+| Android  | Programming     |
+| IOS      | Reading         |
+| IOS      | Sports          |
+| IOS      | Programming     |
+| Web      | Reading         |
+| Web      | Sports          |
+| Web      | Programming     |
++----------+-----------------+
+
+like we need to generate all possible combinations of rows from two tables(in this case all posible combinations between two columns of same table, so self cross join), creating a Cartesian product
