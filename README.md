@@ -518,4 +518,14 @@ to
 | Web      | Programming     |
 +----------+-----------------+
 
+select * from (
+select 'Android' as platform union 
+select 'IOS' union 
+select 'Web')
+t1 cross join (
+select 'Programming' as experiment_name union 
+select 'Reading' union 
+select 'Sports'
+) t2
+
 like we need to generate all possible combinations of rows from two tables(in this case all posible combinations between two columns of same table, so self cross join), creating a Cartesian product
