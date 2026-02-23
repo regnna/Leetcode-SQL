@@ -54,6 +54,7 @@ using (player_id) / ON p.player_id = c.player_id;
 * DATE_ADD(DATE('2023-11-01'),interval((5-dayofweek(DATE('2023-11-01'))+7)%7)DAY) as friday_date :- 
   * it will give us next friday date after '2023-11-01'
 * datediff("day",before_date,after_date)
+  * in duckdb datediff('day',before_date,after_date) i.e. day has to be in single quote
 
 ### strftime()
   stringformat time
@@ -529,3 +530,7 @@ select 'Sports'
 ) t2
 
 like we need to generate all possible combinations of rows from two tables(in this case all posible combinations between two columns of same table, so self cross join), creating a Cartesian product
+
+### Lead()/ lag() over(partition by __ order by __)
+
+On the samee column when you want to use the next or the prevoious row's value
