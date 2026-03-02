@@ -494,8 +494,10 @@ if you join witout condition use "on true" caluse
 ### use cases of cross join
 
 suppose we need to convert   
-+----------+-----------------+
-platform | experiment_name   |
+
+
+| platform | experiment_name |
+|----------|-----------------|
 | IOS      | Programming     |
 | IOS      | Sports          |
 | Android  | Reading         |
@@ -505,9 +507,9 @@ platform | experiment_name   |
 
 to 
 
-----------+-----------------+
+
 | platform | experiment_name |
-+----------+-----------------
+|----------|-----------------|
 | Android  | Reading         |
 | Android  | Sports          |
 | Android  | Programming     |
@@ -517,7 +519,7 @@ to
 | Web      | Reading         |
 | Web      | Sports          |
 | Web      | Programming     |
-+----------+-----------------+
+
 
 select * from (
 select 'Android' as platform union 
@@ -530,6 +532,40 @@ select 'Sports'
 ) t2
 
 like we need to generate all possible combinations of rows from two tables(in this case all posible combinations between two columns of same table, so self cross join), creating a Cartesian product
+
+| Problem                         | Cause                   | Solution                            |
+| ------------------------------- | ----------------------- | ----------------------------------- |
+| Duplicate pairs (A,B) and (B,A) | Symmetric CROSS JOIN    | Directional filter (`<`, `>`, `!=`) |
+| Self-pairs (A,A)                | Joining table to itself | Exclusion filter (`<>`, `!=`)       |
+| Exploding row count             | No filtering            | Early pruning, window functions     |
+| Memory/performance issues       | O(n²) complexity        | Limit search space, use indexes     |
+
+
+- START: Do you need all combinations?
+  - NO → Use regular JOIN with ON clause
+  - YES → Same table or different tables?
+    - SAME TABLE → Need self-pairs?
+      - YES (A,A allowed) → `p1.rn = p2.rn`
+      - NO (distinct pairs only) → `p1.rn < p2.rn`
+    - DIFFERENT TABLES → Missing values possible?
+      - YES → Use VALUES/UNION dimension tables
+      - NO → CROSS JOIN directly   
+  
+| Goal                      | Condition        | Example                         | Use Case                                                          |
+| ------------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------- |
+| **All pairs (with self)** | `=` or no filter | `p1.id = p2.id`                 | Self-similarity, identity matrix, correlation of item with itself |
+| **All pairs (no self)**   | `<>` or `!=`     | `p1.id <> p2.id`                | Dissimilarity matrix, excluding diagonal                          |
+| **Unique pairs, no self** | `<` or `>`       | `p1.id < p2.id`                 | Undirected graphs, distance calculations, combination locks       |
+| **Consecutive sequence**  | `= rn + 1`       | `p2.rn = p1.rn + 1`             | Time series diff, sliding window, adjacent comparisons            |
+| **Within range/window**   | `< threshold`    | `ABS(p1.x - p2.x) < 10`         | Spatial proximity, temporal events, anomaly detection             |
+| **Strict ordering**       | `<=` or `>=`     | `p1.date <= p2.date`            | Cumulative calculations, before/after analysis                    |
+| **Non-consecutive gap**   | `> 1`            | `p2.rn - p1.rn > 1`             | Skip-one analysis, non-adjacent pairs                             |
+| **Bounded difference**    | `BETWEEN`        | `p2.rn - p1.rn BETWEEN 2 AND 5` | Specific gap analysis, lag-2 to lag-5 effects                     |
+| **Modulo pairing**        | `% = 0`          | `p1.id % 2 = p2.id % 2`         | Even-odd grouping, parity matching                                |
+| **Same category**         | `=` (other col)  | `p1.category = p2.category`     | Intra-group comparisons, stratified analysis                      |
+| **Different category**    | `<>`             | `p1.category <> p2.category`    | Inter-group comparisons, cross-category effects                   |
+| **Hierarchical**          | `LIKE` / prefix  | `p1.code LIKE p2.code \|\| '%'` | Parent-child, tree traversal, org charts                          |
+
 
 ### Lead()/ lag() over(partition by __ order by __)
 
