@@ -15,7 +15,6 @@ When you use GROUP BY, every selected column must be:
 
 - in the GROUP BY, or
 - an aggregate (MAX(), MIN(), STRING_AGG(), COUNT…)
-  - 
 - or an engine-specific exception like ANY_VALUE()
 
 </details>
@@ -570,3 +569,31 @@ like we need to generate all possible combinations of rows from two tables(in th
 ### Lead()/ lag() over(partition by __ order by __)
 
 On the samee column when you want to use the next or the prevoious row's value
+
+
+### Where to start solving multi-table problem
+Always anchor on dimension table to preserve complete entity list
+ANTI-PATTERN AVOIDED: Starting from fact table then back-filling misses inactive entities
+
+```
+START: Detecting dimensions and Facts table
+        │
+        ├── Contains IDs + descriptive attributes?
+        │   ├── product_id, product_name, category
+        │   ├── customer_id, customer_name, city  
+        │   ├── date, day_of_week, is_holiday
+        │   └── → DIMENSION (the "who/what/when/where")
+        │
+        └── Contains measures + foreign keys?
+            ├── sale_id, amount, quantity
+            ├── event_id, timestamp, duration
+            ├── click_id, page_id, user_id, time_spent
+            └── → FACT (the "what happened")   
+```
+
+| Need                          | Use                                         |
+| ----------------------------- | ------------------------------------------- |
+| All rows from **left** table  | `LEFT JOIN`                                 |
+| All rows from **right** table | `RIGHT JOIN` (rare, confusing)              |
+| All rows from **both**        | `FULL OUTER JOIN`                           |
+| **All dimension entities**    | Start from dimension, use `LEFT JOIN` chain |
