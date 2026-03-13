@@ -291,6 +291,7 @@ the 'Order of Excecution in SQL'
   * Where(filter the raw rows)
   * Group by(Bundle the rows into groups)
   * HAving(Filter the groups)
+    * select distinct user_id from cte2 group by user_id,contest_id-rnk having count(*)>=3
   * SELECT(Pick columns)
   * Window Functions(Apply over())
   * Order by (Sort the results)
