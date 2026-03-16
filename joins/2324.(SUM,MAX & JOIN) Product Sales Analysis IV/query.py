@@ -33,7 +33,7 @@ p.price from sales s left join product p on s.product_id=p.product_id
 )) where Product_Quant*price= max_cost
 */
 
-SELECT user_id, product_id
+explain analyze SELECT user_id, product_id
 FROM (
     SELECT 
         s.user_id,
