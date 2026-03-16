@@ -315,7 +315,6 @@ QUALIFY COUNT(*) OVER() > 1;
 | CTE + WHERE | Anything         | At the end             | Yes                       |   |
 
 
-
 The easiest way to force a null is to wrap your query in MAX(). When MAX() is applied to an empty set, it returns NULL.
 
 ```sql
@@ -598,3 +597,8 @@ START: Detecting dimensions and Facts table
 | All rows from **right** table | `RIGHT JOIN` (rare, confusing)              |
 | All rows from **both**        | `FULL OUTER JOIN`                           |
 | **All dimension entities**    | Start from dimension, use `LEFT JOIN` chain |
+
+``` sql
+with c as(select *,row_number() over(order by x,y) rn from point2d )
+select round(sqrt(pow((p2.x-p1.x),2)+pow((p2.y-p1.y),2)),2) as shortest from c p1  join c p2 on p1.rn>p2.rn order by shortest limit 1
+```
