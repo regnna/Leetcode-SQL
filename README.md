@@ -31,6 +31,7 @@ dateformat(trans_date,'%Y-%m') as month,\
 `COUNT(*) OVER()` is not the same as `select max(id) from seat`
 rather `COUNT(*) OVER()` gives number of rows that very table has like `select count(*) from seat`
 
+```sql
 case when mod(id,2)=0 then id-1 
       /*when id=(select max(id) from seat)*/
     when COUNT(*) OVER()  and mod(id,2)<>0 then id
@@ -39,6 +40,15 @@ case when mod(id,2)=0 then id-1
 CASE   WHEN mod(id, 2) <> 0 THEN COALESCE(LEAD(student) OVER(ORDER BY id), student)
         ELSE LAG(student) OVER(ORDER BY id)
 
+```
+
+```sql
+COALESCE(SUM(CASE WHEN EXTRACT(DOW FROM o.order_date) = 1 THEN o.quantity END), 0) AS Monday,
+~~
+dayofweek(order_date) as day --> that is in first cte
+case when day=1 then coalesce(val,0) end as Monday --> it has to be done in 2nd cte
+ifnull(sum(Monday),0) as Monday --> and this in last solution table
+```
 ## Join with same column name
 ```sql
 select ................
@@ -586,7 +596,7 @@ START: Detecting dimensions and Facts table
         ├── Contains IDs + descriptive attributes?
         │   ├── product_id, product_name, category
         │   ├── customer_id, customer_name, city  
-        │   ├── date, day_of_week, is_holiday
+        │   ├── date, dayofweek, is_holiday
         │   └── → DIMENSION (the "who/what/when/where")
         │
         └── Contains measures + foreign keys?
