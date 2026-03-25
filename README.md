@@ -180,6 +180,7 @@ SUM(
 WINDOW FUNCTIONS[ over(partition by ......)]
 ├── Aggregate → SUM, AVG, COUNT, MIN, MAX
 ├── Ranking → ROW_NUMBER, RANK, DENSE_RANK, NTILE,PERCENT_RANK, CUME_DIST
+    ├── row_number and rank is slightly different :- IF TWO ROWS HAVE SAME VALUES ROW_NUMBER WILL GENERATE DIFFERENT VALUE FOR EACH
     └── Befor any type of ranking you must make it sure the rows are unique
         if not:
         with cte as (
