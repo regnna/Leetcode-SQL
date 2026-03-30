@@ -255,16 +255,57 @@ When the task is to pick a row, use ROW_NUMBER / RANK
 
 When the task is to copy a value, use FIRST_VALUE
 
+### Define window of rows in a table we use 
+ - rows between
+   - over(order by column_name rows between 6 Preceding and current row)
+     - aggregation(column_name)  over(order by column_name rows between 6 Preceding and current row)
+      ```sql
+          count(*) over (
+                      order by visited_on
+                      rows between 6 preceding and current row
+                  ) as window_size
+      ```
+          its count row number (1-7)[give 7even if the row is more than 7]
 
-### over(order by column_name rows between 6 Preceding and current row)
-aggregation(column_name)  over(order by column_name rows between 6 Preceding and current row)
+ - range between
+   - RANGE BETWEEN is typically used when dealing with, well, ranges - e.g. date or timestamp values. When using a range the number of rows to be included in the window depend on the actual values in the column, not the number of rows.
 
-count(*) over (
-            order by visited_on
-            rows between 6 preceding and current row
-        ) as window_size
+    Take this sample table:
+    ```sql
+    create table data
+    (
+      change_date date,
+      amount int
+    );
 
-its count row number (1-7)[give 7even if the row is more than 7]
+    insert into data 
+      (change_date, amount)
+    values
+      (date '2022-06-01', 1),
+      (date '2022-06-02', 1),
+      (date '2022-06-03', 1),
+      (date '2022-06-08', 1),
+      (date '2022-06-09', 1),
+      (date '2022-06-10', 1);
+      ```
+    No do a cumulative sum on the amount for the "last four days" with a range and with a rows directive:
+    ```sql
+    select change_date, 
+          sum(amount) over (order by change_date range between '4 days' preceding and current row) range_result, 
+          sum(amount) over (order by change_date rows between 4 preceding and current row) rows_result
+    from data
+    order by change_date;
+    
+    
+    change_date | range_result | rows_result
+    ------------+--------------+------------
+    2022-06-01  |            1 |           1
+    2022-06-02  |            2 |           2
+    2022-06-03  |            3 |           3
+    2022-06-08  |            1 |           4
+    2022-06-09  |            2 |           5
+    2022-06-10  |            3 |           5
+    ```
 
 ### complex Rank()
   rank() over( order by 
