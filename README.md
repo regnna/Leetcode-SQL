@@ -659,3 +659,23 @@ START: Detecting dimensions and Facts table
 with c as(select *,row_number() over(order by x,y) rn from point2d )
 select round(sqrt(pow((p2.x-p1.x),2)+pow((p2.y-p1.y),2)),2) as shortest from c p1  join c p2 on p1.rn>p2.rn order by shortest limit 1
 ```
+
+Like string condition command 
+- where col like '% hgass%'
+- left joim table on on concat(' ',lower(p.content),' ') like concat('% ',lower(word),' %')
+
+GROUP_CONCAT function is an aggregate function that concatenates non-NULL values from multiple rows into a single string, typically used alongside the GROUP BY clause to combine data for specific categories.  By default, it separates values with a comma, but this can be customized using the SEPARATOR parameter, and duplicate values can be removed with the DISTINCT keyword. 
+
+Key capabilities include:
+
+```
+DISTINCT: Eliminates duplicate values before concatenation. 
+ORDER BY: Sorts values in ascending or descending order before joining. 
+SEPARATOR: Defines a custom delimiter (default is ,). 
+Grouping: Works with GROUP BY to produce separate concatenated strings for each group, or without it to merge the entire dataset. 
+
+ifnull(group_Concat(distinct topic_id order by topic_id),'Ambiguous!') as topic
+```
+
+
+**array_agg** function is an aggregate tool used to combine values from multiple rows into a single array. It is particularly useful for denormalizing data or rolling up related records into a single row for reportin
